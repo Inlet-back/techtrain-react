@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { threadSchema } from "@lib/thread";
 import { useNavigate } from "react-router-dom";
+import Header from "./components/Header";
+import Button from "./components/Button";
 
 function CreateThreadPage() {
   const [title, setTitle] = useState("");
@@ -35,29 +37,42 @@ function CreateThreadPage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Create New Thread</h1>
-      <form onSubmit={onSubmitThread} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Title
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            required
-          />
-          {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-        </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          Create
-        </button>
-      </form>
+    <div>
+      <Header />
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", marginTop: "100px" }}>
+        <h2 style={{ fontSize: "32px", fontWeight: "bold", color: "white", marginBottom: "24px" }}>スレッドを新規作成</h2>
+        <form onSubmit={onSubmitThread} style={{ width: "100%", maxWidth: "600px", padding: "16px", backgroundColor: "white", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
+          <div style={{ marginBottom: "16px" }}>
+            <label style={{ display: "block", fontSize: "16px", fontWeight: "bold", marginBottom: "8px" }}>
+              タイトル
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="スレッドタイトル"
+              style={{ width: "100%", padding: "12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "16px" }}
+              required
+            />
+            {error && <p style={{ color: "red", fontSize: "14px", marginTop: "8px" }}>{error}</p>}
+          </div>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <Button
+              type="button"
+              onClick={() => navigate("/")}
+              style={{ backgroundColor: "gray", color: "white" }}
+            >
+              一覧に戻る
+            </Button>
+            <Button
+              type="submit"
+              style={{ backgroundColor: "blue", color: "white" }}
+            >
+              作成
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
