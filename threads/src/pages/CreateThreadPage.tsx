@@ -48,7 +48,7 @@ function CreateThreadPage() {
       <Header />
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", marginTop: "100px" }}>
         <h2 style={{ fontSize: "32px", fontWeight: "bold", color: "white", marginBottom: "24px" }}>スレッドを新規作成</h2>
-        <form onSubmit={handleSubmit(onSubmitThread)} style={{ width: "100%", maxWidth: "600px", padding: "16px", backgroundColor: "white", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
+        <form onSubmit={handleSubmit(onSubmitThread)} style={{ width: "100%", maxWidth: "600px", padding: "16px", backgroundColor: "white", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",position: "fixed"  }}>
           <div style={{ marginBottom: "16px" }}>
             <label style={{ display: "block", fontSize: "16px", fontWeight: "bold", marginBottom: "8px" }}>
               タイトル

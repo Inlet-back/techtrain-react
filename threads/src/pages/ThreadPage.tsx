@@ -101,8 +101,8 @@ function ThreadPage() {
             </button>
           )}
         </div>
-        <div style={{ flex: 1 ,paddingTop: "200px", maxWidth: "1200px", margin: "0 auto", padding: "16px", display: "flex", gap: "16px"}}>
-          <form onSubmit={handleSubmit(onSubmitPost)} style={{ width: "100%", padding: "16px", backgroundColor: "white", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
+        <div style={{ flex: 1 ,paddingTop: "200px", maxWidth: "1200px", margin: "0 auto", padding: "16px", display: "flex", gap: "16px", top: "120px"}}>
+          <form onSubmit={handleSubmit(onSubmitPost)} style={{paddingTop:"50px",position: "fixed" }} >
             <input
               type="text"
               {...register("post", { required: "Post is required" })}
