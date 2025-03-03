@@ -2,15 +2,21 @@ import { useEffect, useState } from "react";
 import "../index.css";
 import { Thread } from "types/thread";
 import Header from "./components/Header";
+import { Link} from "react-router-dom";
 
 function MainPage() {
   const [threads, setThreads] = useState<Thread[]>([]);
+
  
 
   const fetchThreads = async () => {
     const response = await fetch(
       "https://railway.bulletinboard.techtrain.dev/threads"
     );
+     if (!response.ok) {
+      console.error("サーバーエラー");
+      return;
+    }
     const data = await response.json();
     setThreads(data);
   };
@@ -28,11 +34,17 @@ function MainPage() {
         <label style={{ display: "block", fontSize: "30px", fontWeight: "bold", marginBottom: "8px" }}>
             新着スレッド
           </label>
-          {threads.map((thread) => (
-            <div key={thread.id} style={{ padding: "16px", border: "2px solid black", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "background-color 0.3s" }}>
+          {threads && threads.map((thread) => (
+            <div 
+            key={thread.id} 
+            style={{ padding: "16px", border: "2px solid black", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "background-color 0.3s" }}
+            >
+              <Link to={`/threads/${thread.id}`} style={{ textDecoration: "none", color: "black" }} state={{ threadName: thread.title }}>
               <h2 style={{ fontSize: "20px", fontWeight: "600" }}>{thread.title}</h2>
               <p style={{ color: "red" }}>{thread.content}</p>
+              </Link>
             </div>
+            
           ))}
         </div>
       </div>
