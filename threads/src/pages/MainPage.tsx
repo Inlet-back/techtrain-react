@@ -6,24 +6,29 @@ import { Link} from "react-router-dom";
 
 function MainPage() {
   const [threads, setThreads] = useState<Thread[]>([]);
-
+  const [offset, setOffset] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
  
 
   const fetchThreads = async () => {
     const response = await fetch(
-      "https://railway.bulletinboard.techtrain.dev/threads"
+      `https://railway.bulletinboard.techtrain.dev/threads?offset=${offset}`
     );
      if (!response.ok) {
       console.error("サーバーエラー");
       return;
     }
     const data = await response.json();
-    setThreads(data);
+   if(data.length < 10) {
+      setHasMore(false);
+    }
+      setThreads((prev) => [...prev, ...data]);
+
   };
 
   useEffect(() => {
     fetchThreads();
-  }, []);
+  }, [offset]);
 
   return (
     <div>
@@ -46,6 +51,11 @@ function MainPage() {
             </div>
             
           ))}
+            {hasMore && (
+            <button onClick={() => setOffset((prevOffset) => prevOffset + 10)} style={{ marginTop: "16px", padding: "12px 24px", backgroundColor: "blue", color: "white", border: "none", borderRadius: "4px", fontSize: "16px" }}>
+              もっと見る
+            </button>
+          )}
         </div>
       </div>
     </div>
