@@ -71,8 +71,8 @@ function ThreadPage() {
           <label style={{ display: "block", fontSize: "30px", fontWeight: "bold", marginBottom: "8px" }}>
             {threadName}
           </label>
-          {thread && thread.posts.map((post) => (
-            <div key={post.id} style={{ padding: "16px", border: "2px solid black", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "background-color 0.3s" }}>
+          {thread && thread.posts.map((post,index) => (
+            <div key={post.id+index} style={{ padding: "16px", border: "2px solid black", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "background-color 0.3s" }}>
               <h2 style={{ fontSize: "20px", fontWeight: "600" }}>{post.post}</h2>
             </div>
           ))}
