@@ -16,20 +16,26 @@ function ThreadPage() {
   const { id } = useParams<{ id: string }>();
   const [thread, setThread] = useState<ThreadWithPost | null>(null);
   const [post, setPost] = useState<string>("");
-  // const [offset, setOffset] = useState<number>(0);
-  // const [hasMore, setHasMore] = useState<boolean>(true);
+  const [offset, setOffset] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   const fetchPosts = async () => {
     const response = await fetch(
-      `https://railway.bulletinboard.techtrain.dev/threads/${id}/posts`
+      `https://railway.bulletinboard.techtrain.dev/threads/${id}/posts?offset=${offset}`
     );
     if (!response.ok) {
       console.log("サーバーエラー");
       return;
     }
-    const data = await response.json();
- 
-    setThread(data);
+    const data :ThreadWithPost = await response.json();
+    if (data.posts.length < 10) {
+      setHasMore(false);
+    }
+
+    setThread((prev) => ({
+      ...prev!,
+      posts: [...(prev?.posts || []), ...data.posts],
+    }));
     console.log(data);
   };
 
@@ -55,7 +61,7 @@ function ThreadPage() {
 
   useEffect(() => {
     fetchPosts();
-  }, [id]);
+  }, [id,offset]);
 
   return (
     <div>
@@ -70,6 +76,11 @@ function ThreadPage() {
               <h2 style={{ fontSize: "20px", fontWeight: "600" }}>{post.post}</h2>
             </div>
           ))}
+           {hasMore && (
+            <button onClick={() => setOffset((prevOffset) => prevOffset + 10)} style={{ marginTop: "16px", padding: "12px 24px", backgroundColor: "blue", color: "white", border: "none", borderRadius: "4px", fontSize: "16px" }}>
+              もっと見る
+            </button>
+          )}
         </div>
         <div style={{ flex: 1 ,paddingTop: "200px", maxWidth: "1200px", margin: "0 auto", padding: "16px", display: "flex", gap: "16px"}}>
           <form onSubmit={onSubmitPost}>

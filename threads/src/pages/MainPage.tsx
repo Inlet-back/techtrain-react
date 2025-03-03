@@ -10,7 +10,7 @@ function MainPage() {
   const [hasMore, setHasMore] = useState<boolean>(true);
  
 
-  const fetchThreads = async (offset:number) => {
+  const fetchThreads = async () => {
     const response = await fetch(
       `https://railway.bulletinboard.techtrain.dev/threads?offset=${offset}`
     );
@@ -27,7 +27,7 @@ function MainPage() {
   };
 
   useEffect(() => {
-    fetchThreads(offset);
+    fetchThreads();
   }, [offset]);
 
   return (
