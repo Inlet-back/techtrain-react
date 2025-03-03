@@ -16,6 +16,8 @@ function ThreadPage() {
   const { id } = useParams<{ id: string }>();
   const [thread, setThread] = useState<ThreadWithPost | null>(null);
   const [post, setPost] = useState<string>("");
+  // const [offset, setOffset] = useState<number>(0);
+  // const [hasMore, setHasMore] = useState<boolean>(true);
 
   const fetchPosts = async () => {
     const response = await fetch(
@@ -26,6 +28,7 @@ function ThreadPage() {
       return;
     }
     const data = await response.json();
+ 
     setThread(data);
     console.log(data);
   };
