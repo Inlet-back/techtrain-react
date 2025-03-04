@@ -39,9 +39,9 @@ function MainPage() {
         <label style={{ display: "block", fontSize: "30px", fontWeight: "bold", marginBottom: "8px" }}>
             新着スレッド
           </label>
-          {threads && threads.map((thread) => (
+          {threads && threads.map((thread,index) => (
             <div 
-            key={thread.id} 
+            key={`${thread.id}-${index}`} 
             style={{ padding: "16px", border: "2px solid black", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "background-color 0.3s" }}
             >
               <Link to={`/threads/${thread.id}`} style={{ textDecoration: "none", color: "black" }} state={{ threadName: thread.title }}>

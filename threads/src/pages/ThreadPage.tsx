@@ -1,25 +1,32 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "../index.css";
 import Header from "./components/Header";
 import { useLocation, useParams } from "react-router-dom";
 import { ThreadWithPost } from "types/thread";
 import Button from "./components/Button";
+import { z } from "zod";
+import { PostSchema } from "@lib/post";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 interface ThreadName {
   threadName: string;
 }
-
+type PostData = z.infer<typeof PostSchema>;
 function ThreadPage() {
   const location = useLocation();
   const { threadName } = location.state as ThreadName;
 
   const { id } = useParams<{ id: string }>();
   const [thread, setThread] = useState<ThreadWithPost | null>(null);
-  const [post, setPost] = useState<string>("");
   const [offset, setOffset] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const {
+    register,
+    handleSubmit,
+  } = useForm<PostData>();
 
-  const fetchPosts = async () => {
+  const fetchPosts= useCallback(
+    async () => {
     const response = await fetch(
       `https://railway.bulletinboard.techtrain.dev/threads/${id}/posts?offset=${offset}`
     );
@@ -32,15 +39,26 @@ function ThreadPage() {
       setHasMore(false);
     }
 
-    setThread((prev) => ({
-      ...prev!,
-      posts: [...(prev?.posts || []), ...data.posts],
-    }));
-    console.log(data);
-  };
+    setThread((prev) => {
+      if (  offset === 0) {
+        return {
+          ...prev!,
+          posts: data.posts,
+        };
+      } else {
+        return {
+          ...prev!,
+          posts: [...(prev?.posts || []), ...data.posts],
+        };
+      }
+    });
+   
+  },[id,offset]
+  );
 
-  const onSubmitPost = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmitPost: SubmitHandler<PostData> = useCallback( 
+    async (data : PostData) => {
+
     const response = await fetch(
       `https://railway.bulletinboard.techtrain.dev/threads/${id}/posts`,
       {
@@ -48,16 +66,17 @@ function ThreadPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ post: post }),
+        body: JSON.stringify(data),
       }
     );
     if (!response.ok) {
       console.error("サーバーエラー");
       return;
     }
-    setPost("");
+  
     fetchPosts();
-  };
+  },[id,fetchPosts]
+  );
 
   useEffect(() => {
     fetchPosts();
@@ -71,8 +90,8 @@ function ThreadPage() {
           <label style={{ display: "block", fontSize: "30px", fontWeight: "bold", marginBottom: "8px" }}>
             {threadName}
           </label>
-          {thread && thread.posts.map((post) => (
-            <div key={post.id} style={{ padding: "16px", border: "2px solid black", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "background-color 0.3s" }}>
+          {thread && thread.posts.map((post,index) => (
+            <div key={post.id+index} style={{ padding: "16px", border: "2px solid black", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", transition: "background-color 0.3s" }}>
               <h2 style={{ fontSize: "20px", fontWeight: "600" }}>{post.post}</h2>
             </div>
           ))}
@@ -82,12 +101,11 @@ function ThreadPage() {
             </button>
           )}
         </div>
-        <div style={{ flex: 1 ,paddingTop: "200px", maxWidth: "1200px", margin: "0 auto", padding: "16px", display: "flex", gap: "16px"}}>
-          <form onSubmit={onSubmitPost}>
+        <div style={{ flex: 1 ,paddingTop: "200px", maxWidth: "1200px", margin: "0 auto", padding: "16px", display: "flex", gap: "16px", top: "120px"}}>
+          <form onSubmit={handleSubmit(onSubmitPost)} style={{paddingTop:"50px",position: "fixed" }} >
             <input
               type="text"
-              value={post}
-              onChange={(e) => setPost(e.target.value)}
+              {...register("post", { required: "Post is required" })}
               placeholder="投稿しよう"
               style={{ width: "100%", padding: "12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "16px" }}
               required
